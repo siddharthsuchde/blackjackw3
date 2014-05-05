@@ -3,10 +3,10 @@
 He has bet Rs.<%=session[:bet]%>
 <br>
 The players hand is:
-<%=session[:player] %>
+<%=card_images(session[:player]) %>
 <br>
 The Dealers hand is:
-<%=session[:dealer]%>
+<%=card_images(session[:dealer])%>
 <br>
 The Players Total is:
 <%=session[:player_total]%>
@@ -37,6 +37,10 @@ The Dealers Total is:
 		<input type="submit" value="Stay" class="btn" />
 	</form>
 <%end%>
+
+
+
+
 
 
 

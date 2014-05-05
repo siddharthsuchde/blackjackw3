@@ -24,7 +24,31 @@ helpers do
 		end
 		total
 	end
+
+	def card_images(cards)
+		#[[H,2], [S,8]] => cards will be "popped" like this.
+		suit = case cards[0]
+			when "H" then "hearts"
+			when "D" then "diamonds"
+			when "S" then "spades"
+			when "C" then "clubs"
+		end
+
+		value = cards[1] 
+		if ['J','Q','K','A'].include?(value)
+			case value
+			when "J" then "jack"
+			when "Q" then "queen"
+			when "K" then "king"
+			when "A" then "ace"
+			end
+		end
+		"<img src='/images/cards/#{suit}_#{value}.jpg'/>"
+	end
 end
+
+
+
 
 before do
 	@show_hit_stay_buttons = true
