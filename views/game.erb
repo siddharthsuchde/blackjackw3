@@ -1,0 +1,49 @@
+<%=session[:name]%> is ready to play Blackjack!
+<br>
+He has bet Rs.<%=session[:bet]%>
+<br>
+The players hand is:
+<%=session[:player] %>
+<br>
+The Dealers hand is:
+<%=session[:dealer]%>
+<br>
+The Players Total is:
+<%=session[:player_total]%>
+<br>
+The Dealers Total is:
+<%=session[:dealer_total]%>
+<br>
+
+<% if session[:player_total] == 21%>
+	<%="Congrats! " + session[:name] + " wins!"%>
+<% elsif session[:dealer_total] == 21%>
+	<%= "Dealer wins"%>
+<% elsif session[:player_total] && session[:dealer_total] == 21%>
+	<%="It's a tie!"%>
+<% end %>
+
+<% if session[:player_total] < 21 %>
+	<%="What would you like to do?" %>
+<% end %>
+
+<br>
+
+<% if @show_hit_stay_buttons %>
+	<form action="/game/player/hit" method="post">
+		<input type="submit" value="Hit" class="btn"/>
+	</form>
+	<form action="/game/player/stay" method="post">
+		<input type="submit" value="Stay" class="btn" />
+	</form>
+<%end%>
+
+
+
+
+
+
+
+
+
+
