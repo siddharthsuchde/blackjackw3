@@ -1,40 +1,68 @@
-<%=session[:name]%> is ready to play Blackjack!
+
+<h2><%=session[:name]%> is ready to play Blackjack!</h2>
 <br>
-He has bet Rs.<%=session[:bet]%>
+<!--<h6>He has bet Rs.<%=session[:bet]%></h6> -->
+
+<% if @startover_button %>
+	<a href = "/game" class ="btn" type="button" %> Play Again </a>
+<%end%>
 <br>
-The players hand is:
-<%=card_images(session[:player]) %>
-<br>
-The Dealers hand is:
-<%=card_images(session[:dealer])%>
-<br>
-The Players Total is:
-<%=session[:player_total]%>
-<br>
-The Dealers Total is:
-<%=session[:dealer_total]%>
 <br>
 
-<% if session[:player_total] == 21%>
-	<%="Congrats! " + session[:name] + " wins!"%>
-<% elsif session[:dealer_total] == 21%>
-	<%= "Dealer wins"%>
-<% elsif session[:player_total] && session[:dealer_total] == 21%>
-	<%="It's a tie!"%>
-<% end %>
+<!--Get div class from Bootstrap documentation Components => Misc  -->
+
+<div class="well">
+<h3>The Dealers hand is:</h3>
+<br>
+<!--.each_with_index gives each card plus the index -->
+<% session[:dealer].each_with_index do |card,i| %>
+	<% if session[:turn] != "Dealer" && i == 0 %>
+	<img src='/images/cards/cover.jpg' class='card_image'>
+	<% else %>
+	<%= card_images(card) %>
+	<%end%>
+<%end%>
+<br>
+<br>
+<br>
+
+<% if @dealer_hit_button %>
+	<form action="/game/dealer/hit" method="post">
+		<input type="submit" value="See Dealers Next Card" class="btn btn-primary btn-large btn-block" />
+	</form>
+<%end%>
+
+</div>
+
+<br>
+<br>
+
+<div class="well">
+<h3>The players hand is:</h3>
+<br>
+<% session[:player].each do |card| %>
+<%= card_images(card) %>
+<%end%>
+<br>
+<br>
+<h4>The Players Total is:
+<%=session[:player_total]%></h4>
+<br>
+</div>
 
 <% if session[:player_total] < 21 %>
 	<%="What would you like to do?" %>
 <% end %>
 
-<br>
 
+<!-- set instance variable to true/fale in main.rb and show <form> buttons accordingly -->
 <% if @show_hit_stay_buttons %>
-	<form action="/game/player/hit" method="post">
-		<input type="submit" value="Hit" class="btn"/>
+<!-- create a "id" class in form so you can access it via CSS template. All id's must be unique. cannot be same.  -->
+	<form id="hit_form" action="/game/player/hit" method="post">
+		<input type="submit" value="Hit" class="btn btn-success btn-large"/>
 	</form>
-	<form action="/game/player/stay" method="post">
-		<input type="submit" value="Stay" class="btn" />
+	<form id="stay_form" action="/game/player/stay" method="post">
+		<input type="submit" value="Stay" class="btn btn-warning btn-large" />
 	</form>
 <%end%>
 

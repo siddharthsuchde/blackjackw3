@@ -1,0 +1,16 @@
+/* use HTML element tag followed by class id to identify
+exactly which element to style */
+
+form#hit_form {
+	float: left;
+	margin-right: 5px;
+}
+
+form#stay_form {
+	float: left;
+}
+
+img.card_image {
+	margin: 0px 50px 10px;
+}
+
