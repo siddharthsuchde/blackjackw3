@@ -96,9 +96,10 @@ end
 #end
 
 post '/game' do
+	session[:name] = params[:name]
 	session[:turn] = session[:name]
 	#create a deck and put it in session
-	session[:name]
+	
 	#session[:bet] = params[:bet]
 	faces = %w(2 3 4 5 6 7 8 9 10 J Q K A)
 	suits = %w(S H C D)

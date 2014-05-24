@@ -38,7 +38,7 @@
 <br>
 
 <div class="well">
-<h3>The players hand is:</h3>
+<h3><%=session[:name]%>'s hand is:</h3>
 <br>
 <% session[:player].each do |card| %>
 <%= card_images(card) %>
