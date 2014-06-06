@@ -6,6 +6,8 @@ require 'sinatra/reloader'
 
 set :sessions, true
 
+BET_TOTAL = 1000
+
 #methods which can be used in main.rb file and all view templates
 #place all common methods here
 helpers do
@@ -76,27 +78,32 @@ get '/new_game' do
 	erb :username
 end
 
-#post '/new_game' do
-	#session[:name] = params[:name]
-	#redirect '/game'
-#end
+post '/new_game' do
+	session[:bet_total] = BET_TOTAL
+	session[:name] = params[:name]
+	redirect '/bet'
+end
+
+get '/bet' do
+	session[:bet] = nil
+	erb :bet
+end
 
 
-#post '/bet' do
+post '/bet' do
 	#param hash much grab input forms VALUE
 	#in .erb file under <input> element
 	#key/value pair. Grab value
 	#param hash is not like session
 	#it get's reset on every request
 	#sessions action is like a cookie
-	
+	session[:name]
+	session[:bet] = params[:bet]
+	erb :bet
+	redirect '/game'
+end
 
-	#session[:name] = params[:name]
-	#erb :bet
-#end
-
-post '/game' do
-	session[:name] = params[:name]
+get '/game' do
 	session[:turn] = session[:name]
 	#create a deck and put it in session
 	
@@ -123,9 +130,11 @@ post '/game' do
 	if session[:player_total] == 21
 		@success = "Congrats! Blackjack. You win!"
 		@show_hit_stay_buttons = false
+		session[:bet_total] += session[:bet]
 	elsif session[:dealer_total] == 21
 		@show_hit_stay_buttons = false
 		@error = "Dealer Hits Blackjack. Dealer wins! Sorry Better Luck Next Time!"
+		session[:bet_total] -= session[:bet]
 	elsif session[:player_total] && session[:dealer_total] == 21
 		@success = "Player and Dealer hit Blackjack! It's a tie!"
 		@show_hit_stay_buttons = false 
@@ -142,14 +151,19 @@ post '/game/player/hit' do
 		@success = "Congrations! Blackjack. You win!!"
 		@show_hit_stay_buttons = false
 		@startover_button = true
+		session[:bet_total] += session[:bet].to_i
 	elsif calculate(session[:player]) > 21
 		@error = "Sorry, your bust! You lose"
 		#buttons disappear when total > 21 as set to false
 		@show_hit_stay_buttons = false
 		@startover_button = true
+		session[:bet_total] -= session[:bet].to_i
 	end
 	#want to render the same original game template
-	erb :game
+	erb :game, layout: false
+	#layout stuff goes away e.g. stylesheet link <src script =..> etc
+	#we are only left witht he actual HTML in the page
+
 end
 
 post '/game/player/stay' do
@@ -162,19 +176,21 @@ post '/game/player/stay' do
 	if calculate(session[:dealer]) > calculate(session[:player])
 		@error = "Sorry! Dealers Total is Higher. The Dealer Wins!"
 		@startover_button = true
+		session[:bet_total] -= session[:bet].to_i
 	elsif calculate(session[:dealer]) < 17 && calculate(session[:dealer]) < calculate(session[:player])
 		@dealer_hit_button = true
 		@success = "The Player decides to stay"
 	elsif calculate(session[:dealer]) >= 17 && calculate(session[:dealer]) < calculate(session[:player])
 		@success = "Players Total is Higher. The Player Wins!"
 		@startover_button = true
+		session[:bet_total] += session[:bet].to_i
 	elsif calculate(session[:dealer]) >= 17 && calculate(session[:dealer]) == calculate(session[:player])
 		@error = "Bummer, it's a tie!"
 		@startover_button = true
 	end
 
 	#want to render the same original game template
-	erb :game
+	erb :game, layout: false
 end
 
 
@@ -188,10 +204,12 @@ post '/game/dealer/hit' do
 		@error = "Dealer Hits Blackjack! Sorry You Lose!"
 		@dealer_hit_button = false
 		@startover_button = true
+		session[:bet_total] -= session[:bet].to_i
 	elsif session[:dealer_total] > 21
 		@success = "Dealer goes Bust! Congrats You Win!"
 		@startover_button = true
 		@dealer_hit_button = false
+		session[:bet_total] += session[:bet].to_i
 	elsif session[:dealer_total] >= 17 && session[:dealer_total] == session[:player_total]
 		@dealer_hit_button = false
 		@error = "Both Totals are Equal. It's a tie!"
@@ -200,13 +218,15 @@ post '/game/dealer/hit' do
 		@dealer_hit_button = false
 		@startover_button = true
 		@error = "Dealers Total is Higher. Dealer Wins!"
+		session[:bet_total] -= session[:bet].to_i
 	elsif session[:dealer_total] >= 17 && session[:dealer_total] < session[:player_total]
 		@dealer_hit_button = false
 		@startover_button = true
 		@success = "Congrats! Your Total is higher you win!!"
+		session[:bet_total] += session[:bet].to_i
 	end
 	
-	erb :game
+	erb :game, layout: false
 end 
 
 

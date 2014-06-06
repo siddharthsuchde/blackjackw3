@@ -1,11 +1,10 @@
 <h2> Choose a bet amount <h2>
 
-<%=session[:name]%> has Rs.1000
+<%=session[:name]%> has $<%=session[:bet_total]%> 
 
 
-<form action="/game" method="post">
+<form action="/bet" method="post">
 	<input type="text" name="bet"/>
 	<input type="submit" value="submit"/>
 </form>
 
-	

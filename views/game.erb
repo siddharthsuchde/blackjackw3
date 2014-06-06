@@ -1,10 +1,19 @@
 
+<div id="game">
+	<%if @error %>
+      <div class="alert alert-error"><%=@error%></div>
+    <% end %>
+    <%if @success %>
+      <div class="alert alert-success"><%=@success%></div>
+    <% end %>
+    
+
 <h2><%=session[:name]%> is ready to play Blackjack!</h2>
 <br>
 <!--<h6>He has bet Rs.<%=session[:bet]%></h6> -->
 
 <% if @startover_button %>
-	<a href = "/game" class ="btn" type="button" %> Play Again </a>
+	<a href = "/bet" class ="btn" type="button" %> Play Again </a>
 <%end%>
 <br>
 <br>
@@ -27,7 +36,7 @@
 <br>
 
 <% if @dealer_hit_button %>
-	<form action="/game/dealer/hit" method="post">
+	<form id="dealer_hit" action="/game/dealer/hit" method="post">
 		<input type="submit" value="See Dealers Next Card" class="btn btn-primary btn-large btn-block" />
 	</form>
 <%end%>
@@ -45,9 +54,11 @@
 <%end%>
 <br>
 <br>
-<h4>The Players Total is:
+<h4><%=session[:name]%>'s Total is:
 <%=session[:player_total]%></h4>
 <br>
+<br>
+<h5><%=session[:name]%> has bet $<%=session[:bet]%></h5>
 </div>
 
 <% if session[:player_total] < 21 %>
@@ -65,6 +76,8 @@
 		<input type="submit" value="Stay" class="btn btn-warning btn-large" />
 	</form>
 <%end%>
+
+</div>
 
 
 
